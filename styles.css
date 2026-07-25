@@ -1,0 +1,1458 @@
+/* ========================================
+   CSS Custom Properties (Design Tokens)
+   ======================================== */
+:root {
+    --color-black: #000000;
+    --color-charcoal-1: #0A0A0A;
+    --color-charcoal-2: #141414;
+    --color-aloe-green: #4ADE80;
+    --color-gold: #D4AF37;
+    --color-white: #FFFFFF;
+    --color-white-muted: rgba(255, 255, 255, 0.6);
+    
+    --font-heading: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    
+    --ease-luxury: cubic-bezier(0.25, 0.1, 0.25, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 4rem;
+    --spacing-xl: 8rem;
+}
+
+/* ========================================
+   Reset & Base Styles
+   ======================================== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    background-color: var(--color-black);
+    color: var(--color-white);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ========================================
+   Custom Cursor
+   ======================================== */
+.cursor-dot, .cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s var(--ease-luxury);
+}
+
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--color-white);
+    border-radius: 50%;
+}
+
+.cursor-ring {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--color-aloe-green);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.15s var(--ease-luxury), border-color 0.3s ease;
+}
+
+body.hovering .cursor-ring {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.5);
+    border-color: var(--color-gold);
+}
+
+/* ========================================
+   Loading Screen
+   ======================================== */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--color-black);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    transition: opacity 0.8s var(--ease-luxury), visibility 0.8s;
+}
+
+.loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loading-logo {
+    font-family: var(--font-heading);
+    font-size: 4rem;
+    font-weight: 300;
+    letter-spacing: 0.5em;
+    color: var(--color-white);
+    opacity: 0;
+    animation: fadeInLogo 1.5s var(--ease-luxury) forwards;
+}
+
+@keyframes fadeInLogo {
+    to { opacity: 1; }
+}
+
+.loading-bar {
+    width: 200px;
+    height: 1px;
+    background: var(--color-charcoal-2);
+    margin-top: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-aloe-green);
+    transform: translateX(-100%);
+    animation: loadingBar 2s var(--ease-luxury) forwards;
+}
+
+@keyframes loadingBar {
+    to { transform: translateX(0); }
+}
+
+/* ========================================
+   Glassmorphism Navigation
+   ======================================== */
+.glass-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem 3rem;
+    background: rgba(10, 10, 10, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    z-index: 1000;
+    transition: transform 0.3s var(--ease-luxury), background 0.3s ease;
+}
+
+.glass-nav.scrolled {
+    transform: translateY(-100%);
+}
+
+.glass-nav.visible {
+    transform: translateY(0);
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    color: var(--color-white);
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 3rem;
+}
+
+.nav-links a {
+    color: var(--color-white-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--color-aloe-green);
+    transition: width 0.3s var(--ease-luxury);
+}
+
+.nav-links a:hover {
+    color: var(--color-white);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.cart-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-white);
+    cursor: none;
+    padding: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.cart-btn:hover {
+    color: var(--color-aloe-green);
+}
+
+/* ========================================
+   Magnetic Button Effect
+   ======================================== */
+.magnetic-btn {
+    cursor: none;
+    transition: transform 0.3s var(--ease-luxury);
+}
+
+/* ========================================
+   Liquid Fill CTA Button
+   ======================================== */
+.cta-button, .add-to-ritual, .newsletter-btn {
+    position: relative;
+    padding: 1rem 2.5rem;
+    background: transparent;
+    border: 1px solid var(--color-white-muted);
+    color: var(--color-white);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    overflow: hidden;
+    cursor: none;
+    transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.cta-button .btn-text, .add-to-ritual .btn-text, .newsletter-btn .btn-text {
+    position: relative;
+    z-index: 2;
+}
+
+.btn-liquid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: var(--color-aloe-green);
+    transition: height 0.4s var(--ease-luxury);
+    z-index: 1;
+}
+
+.cta-button:hover, .add-to-ritual:hover, .newsletter-btn:hover {
+    border-color: var(--color-aloe-green);
+    color: var(--color-black);
+}
+
+.cta-button:hover .btn-liquid, .add-to-ritual:hover .btn-liquid, .newsletter-btn:hover .btn-liquid {
+    height: 100%;
+}
+
+/* ========================================
+   Hero Section
+   ======================================== */
+.hero {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-bg-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 1400px;
+    width: 100%;
+    padding: 0 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.hero-text {
+    padding-right: 2rem;
+}
+
+.hero h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 1s var(--ease-luxury) 2.2s forwards;
+}
+
+.hero-body {
+    font-size: 1.125rem;
+    color: var(--color-white-muted);
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+    max-width: 500px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 1s var(--ease-luxury) 2.4s forwards;
+}
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-bottle-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+}
+
+.bottle-wrapper {
+    position: relative;
+    width: 300px;
+    height: 500px;
+}
+
+.serum-bottle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 140px;
+    height: 320px;
+    opacity: 0;
+    animation: bottleReveal 3s var(--ease-luxury) 1s forwards;
+}
+
+@keyframes bottleReveal {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 100%) rotateY(-30deg);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, 0) rotateY(0deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, 0) rotateY(0deg);
+    }
+}
+
+.bottle-cap {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 50px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    border-radius: 5px 5px 0 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.8s var(--ease-luxury);
+}
+
+.bottle-cap.unscrewed {
+    transform: translateX(-50%) translateY(-80px) rotate(180deg);
+}
+
+.bottle-body {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 270px;
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.05) 0%, 
+        rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px 10px 20px 20px;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+.bottle-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 10;
+}
+
+.label-brand {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    color: var(--color-white);
+}
+
+.label-product {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--color-white-muted);
+    margin-top: 0.5rem;
+}
+
+.bottle-liquid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80%;
+    background: linear-gradient(180deg, 
+        rgba(74, 222, 128, 0.3) 0%, 
+        rgba(74, 222, 128, 0.6) 100%);
+    border-radius: 0 0 20px 20px;
+}
+
+.bottle-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--color-aloe-green) 0%, transparent 70%);
+    opacity: 0;
+    filter: blur(40px);
+    animation: glowPulse 4s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+}
+
+.bottle-wrapper.animated .serum-bottle {
+    animation: bottleReveal 3s var(--ease-luxury) 1s forwards, 
+               bottleBob 6s ease-in-out 4s infinite;
+}
+
+@keyframes bottleBob {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, -15px); }
+}
+
+.bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, 
+        rgba(74, 222, 128, 0.4) 0%, 
+        rgba(74, 222, 128, 0.1) 50%, 
+        transparent 100%);
+    animation: bubbleRise 8s ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+.bubble:nth-child(2) { width: var(--size); height: var(--size); left: 20%; bottom: -20px; }
+.bubble:nth-child(3) { width: var(--size); height: var(--size); left: 70%; bottom: -20px; }
+.bubble:nth-child(4) { width: var(--size); height: var(--size); left: 40%; bottom: -20px; }
+.bubble:nth-child(5) { width: var(--size); height: var(--size); left: 80%; bottom: -20px; }
+.bubble:nth-child(6) { width: var(--size); height: var(--size); left: 30%; bottom: -20px; }
+
+@keyframes bubbleRise {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-600px) scale(1.5);
+        opacity: 0;
+    }
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeIn 1s var(--ease-luxury) 3s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.mouse {
+    width: 24px;
+    height: 40px;
+    border: 1px solid var(--color-white-muted);
+    border-radius: 12px;
+    position: relative;
+}
+
+.wheel {
+    width: 4px;
+    height: 8px;
+    background: var(--color-aloe-green);
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: scrollWheel 2s ease-in-out infinite;
+}
+
+@keyframes scrollWheel {
+    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+    50% { transform: translateX(-50%) translateY(10px); opacity: 0; }
+}
+
+.scroll-indicator span {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--color-white-muted);
+    text-transform: uppercase;
+}
+
+/* ========================================
+   Section Base Styles
+   ======================================== */
+section {
+    padding: var(--spacing-xl) 3rem;
+    position: relative;
+}
+
+.section-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+}
+
+/* ========================================
+   The Science Section
+   ======================================== */
+.science {
+    background: var(--color-charcoal-1);
+    min-height: 100vh;
+}
+
+.science-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+}
+
+.sticky-content {
+    position: sticky;
+    top: 150px;
+    align-self: start;
+    padding-right: 3rem;
+}
+
+.science-intro {
+    font-size: 1.125rem;
+    color: var(--color-white-muted);
+    line-height: 1.8;
+    margin-bottom: 3rem;
+}
+
+.science-stats {
+    display: flex;
+    gap: 3rem;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--color-aloe-green);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--color-white-muted);
+    letter-spacing: 0.1em;
+}
+
+.parallax-container {
+    position: relative;
+    height: 100%;
+    min-height: 800px;
+}
+
+.parallax-image {
+    position: absolute;
+    width: 100%;
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.img-1 {
+    top: 0;
+    background: linear-gradient(135deg, #1a2a1a 0%, #0a1a0a 100%);
+}
+
+.img-2 {
+    top: 300px;
+    background: linear-gradient(135deg, #2a1a1a 0%, #1a0a0a 100%);
+}
+
+.img-3 {
+    top: 600px;
+    background: linear-gradient(135deg, #1a1a2a 0%, #0a0a1a 100%);
+}
+
+.image-overlay {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, transparent 0%, var(--color-charcoal-1) 100%);
+}
+
+/* ========================================
+   Product Showcase Section
+   ======================================== */
+.product {
+    background: var(--color-black);
+}
+
+.product-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+}
+
+.viewer-360 {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+}
+
+.product-bottle-spin {
+    width: 200px;
+    height: 400px;
+    transform-style: preserve-3d;
+    transition: transform 0.1s linear;
+}
+
+.spin-bottle {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+}
+
+.spin-cap {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 60px;
+    background: linear-gradient(135deg, #2a2a2a 0%, #0a0a0a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px 5px 0 0;
+}
+
+.spin-body {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 340px;
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.05) 0%, 
+        rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px 10px 20px 20px;
+    backdrop-filter: blur(10px);
+}
+
+.spin-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--color-white);
+}
+
+.spin-label span {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+}
+
+.spin-label small {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-white-muted);
+    letter-spacing: 0.15em;
+    margin-top: 0.5rem;
+}
+
+.viewer-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.control-btn {
+    width: 50px;
+    height: 50px;
+    border: 1px solid var(--color-white-muted);
+    background: transparent;
+    color: var(--color-white);
+    font-size: 1.25rem;
+    cursor: none;
+    border-radius: 50%;
+    transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.control-btn:hover {
+    border-color: var(--color-aloe-green);
+    color: var(--color-aloe-green);
+}
+
+.drag-hint {
+    font-size: 0.75rem;
+    color: var(--color-white-muted);
+    letter-spacing: 0.1em;
+}
+
+.product-details {
+    padding-left: 2rem;
+}
+
+.product-title {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+}
+
+.product-price {
+    font-size: 1.5rem;
+    color: var(--color-gold);
+    margin-bottom: 2rem;
+}
+
+.product-specs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    padding: 2rem;
+    background: var(--color-charcoal-1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.spec-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.spec-label {
+    font-size: 0.75rem;
+    color: var(--color-white-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.spec-value {
+    font-size: 1.125rem;
+    color: var(--color-white);
+}
+
+.ritual-note {
+    font-size: 0.875rem;
+    color: var(--color-white-muted);
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* ========================================
+   The Ritual Section
+   ======================================== */
+.ritual {
+    background: var(--color-charcoal-2);
+    overflow: hidden;
+}
+
+.ritual-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.ritual-subtitle {
+    font-size: 1.125rem;
+    color: var(--color-white-muted);
+}
+
+.ritual-steps {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+}
+
+.step {
+    flex: 1;
+    max-width: 350px;
+    padding: 3rem 2rem;
+    background: var(--color-charcoal-1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s var(--ease-luxury), border-color 0.3s ease;
+}
+
+.step:hover {
+    transform: translateY(-10px);
+    border-color: var(--color-aloe-green);
+}
+
+.step-number {
+    font-family: var(--font-heading);
+    font-size: 4rem;
+    font-weight: 300;
+    color: var(--color-aloe-green);
+    opacity: 0.3;
+    margin-bottom: 1rem;
+}
+
+.step-title {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.step-desc {
+    font-size: 0.95rem;
+    color: var(--color-white-muted);
+    line-height: 1.7;
+}
+
+.step-visual {
+    height: 200px;
+    margin-top: 2rem;
+    background: linear-gradient(135deg, var(--color-charcoal-2) 0%, var(--color-black) 100%);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.step-visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(74, 222, 128, 0.1) 0%, transparent 70%);
+}
+
+/* ========================================
+   Ingredients Section
+   ======================================== */
+.ingredients {
+    background: var(--color-black);
+}
+
+.ingredients-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.ingredients-subtitle {
+    font-size: 1.125rem;
+    color: var(--color-white-muted);
+}
+
+.ingredients-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.ingredient-card {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 4px;
+    cursor: none;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s var(--ease-luxury), transform 0.6s var(--ease-luxury);
+}
+
+.ingredient-card.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.ingredient-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.5s var(--ease-luxury);
+}
+
+.ing-1 { background: linear-gradient(135deg, #2d5a2d 0%, #1a3a1a 100%); }
+.ing-2 { background: linear-gradient(135deg, #5a2d4a 0%, #3a1a2a 100%); }
+.ing-3 { background: linear-gradient(135deg, #5a4a2d 0%, #3a2a1a 100%); }
+.ing-4 { background: linear-gradient(135deg, #2d4a5a 0%, #1a2a3a 100%); }
+.ing-5 { background: linear-gradient(135deg, #4a2d5a 0%, #2a1a3a 100%); }
+.ing-6 { background: linear-gradient(135deg, #5a5a2d 0%, #3a3a1a 100%); }
+
+.ingredient-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ingredient-card:hover .ingredient-overlay {
+    opacity: 1;
+}
+
+.ingredient-card:hover .ingredient-image {
+    transform: scale(1.1);
+}
+
+.ingredient-overlay h4 {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 400;
+}
+
+.ingredient-overlay p {
+    font-size: 0.875rem;
+    color: var(--color-aloe-green);
+}
+
+/* ========================================
+   Testimonials Section
+   ======================================== */
+.testimonials {
+    background: var(--color-charcoal-1);
+    padding: var(--spacing-xl) 3rem;
+}
+
+.testimonial-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.testimonial-quote {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s var(--ease-luxury), transform 0.8s var(--ease-luxury);
+}
+
+.testimonial-quote.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.quote-text {
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 300;
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+    color: var(--color-white);
+}
+
+.quote-author {
+    font-size: 0.875rem;
+    color: var(--color-white-muted);
+    font-style: normal;
+    letter-spacing: 0.1em;
+}
+
+/* ========================================
+   Sustainability Section
+   ======================================== */
+.sustainability {
+    position: relative;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.sustainability-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a3a1a 0%, #0a1a0a 100%);
+}
+
+.sustainability-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    max-width: 800px;
+    padding: 3rem;
+}
+
+.sustainability-text {
+    font-size: 1.25rem;
+    color: var(--color-white-muted);
+    line-height: 1.8;
+    margin-bottom: 3rem;
+}
+
+.sustainability-badges {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+}
+
+.badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--color-white);
+}
+
+.badge svg {
+    color: var(--color-aloe-green);
+}
+
+.badge span {
+    font-size: 0.875rem;
+    letter-spacing: 0.1em;
+}
+
+/* ========================================
+   Journal Section
+   ======================================== */
+.journal {
+    background: var(--color-black);
+}
+
+.journal-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.journal-subtitle {
+    font-size: 1.125rem;
+    color: var(--color-white-muted);
+}
+
+.journal-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.journal-card {
+    background: var(--color-charcoal-1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s var(--ease-luxury), transform 0.6s var(--ease-luxury);
+}
+
+.journal-card.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.journal-image {
+    height: 250px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.journal-1 { background: linear-gradient(135deg, #2a3a2a 0%, #1a2a1a 100%); }
+.journal-2 { background: linear-gradient(135deg, #3a2a3a 0%, #2a1a2a 100%); }
+.journal-3 { background: linear-gradient(135deg, #3a3a2a 0%, #2a2a1a 100%); }
+
+.journal-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(74, 222, 128, 0);
+    transition: background 0.4s ease;
+}
+
+.journal-card:hover .journal-image::before {
+    background: rgba(74, 222, 128, 0.1);
+}
+
+.journal-content {
+    padding: 2rem;
+}
+
+.journal-category {
+    font-size: 0.75rem;
+    color: var(--color-aloe-green);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.journal-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin: 0.75rem 0;
+}
+
+.journal-excerpt {
+    font-size: 0.95rem;
+    color: var(--color-white-muted);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.journal-link {
+    font-size: 0.875rem;
+    color: var(--color-white);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: color 0.3s ease;
+}
+
+.journal-link:hover {
+    color: var(--color-aloe-green);
+}
+
+/* ========================================
+   Footer
+   ======================================== */
+.footer {
+    background: var(--color-charcoal-2);
+    padding: var(--spacing-xl) 3rem var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.footer-brand {
+    margin-bottom: 4rem;
+}
+
+.footer-logo {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    margin-bottom: 0.5rem;
+}
+
+.footer-tagline {
+    font-size: 0.95rem;
+    color: var(--color-white-muted);
+}
+
+.footer-newsletter {
+    margin-bottom: 4rem;
+    padding: 3rem;
+    background: var(--color-charcoal-1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-newsletter h4 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+}
+
+.footer-newsletter p {
+    font-size: 0.95rem;
+    color: var(--color-white-muted);
+    margin-bottom: 1.5rem;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 1rem;
+    max-width: 500px;
+}
+
+.newsletter-input {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    background: transparent;
+    border: 1px solid var(--color-white-muted);
+    color: var(--color-white);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+}
+
+.newsletter-input::placeholder {
+    color: var(--color-white-muted);
+}
+
+.newsletter-input:focus {
+    outline: none;
+    border-color: var(--color-aloe-green);
+}
+
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+    margin-bottom: 4rem;
+}
+
+.link-column h5 {
+    font-size: 0.875rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    color: var(--color-white);
+}
+
+.link-column a {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--color-white-muted);
+    text-decoration: none;
+    padding: 0.5rem 0;
+    transition: color 0.3s ease;
+}
+
+.link-column a:hover {
+    color: var(--color-aloe-green);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-bottom p {
+    font-size: 0.875rem;
+    color: var(--color-white-muted);
+}
+
+.legal-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.legal-links a {
+    font-size: 0.875rem;
+    color: var(--color-white-muted);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.legal-links a:hover {
+    color: var(--color-white);
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+@media (max-width: 1024px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .hero-text {
+        padding-right: 0;
+    }
+    
+    .hero-body {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .science-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .sticky-content {
+        position: relative;
+        top: 0;
+        padding-right: 0;
+    }
+    
+    .product-container {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    
+    .product-details {
+        padding-left: 0;
+    }
+    
+    .ritual-steps {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .step {
+        max-width: 100%;
+    }
+    
+    .ingredients-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .journal-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-links {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .hero-bottle-container {
+        display: none;
+    }
+    
+    .science-stats {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .sustainability-badges {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .ingredients-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .newsletter-form {
+        flex-direction: column;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .legal-links {
+        justify-content: center;
+    }
+}
