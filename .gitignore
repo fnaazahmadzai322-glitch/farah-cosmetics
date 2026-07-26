@@ -1,7 +1,30 @@
 ```
-# Logs
-*.log
+# Build artifacts
+dist/
+build/
+*.pyc
+__pycache__/
 
-# Compressed archives
-*.tar.gz
+# Dependencies
+node_modules/
+venv/
+.venv/
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# System files
+.DS_Store
+Thumbs.db
 ```

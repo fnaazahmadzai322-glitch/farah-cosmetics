@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farah Cosmetics | Pure Aloe. Pure Luxury.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.29/dist/lenis.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --charcoal-1: #0A0A0A;
+            --charcoal-2: #141414;
+            --emerald: #4ADE80;
+            --emerald-glow: rgba(74, 222, 128, 0.3);
+            --gold: #D4AF37;
+            --white: #FFFFFF;
+            --white-muted: rgba(255, 255, 255, 0.6);
+            --font-serif: 'Cormorant Garamond', Georgia, serif;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        html.lenis {
+            height: auto;
+        }
+
+        .lenis.lenis-smooth {
+            scroll-behavior: auto;
+        }
+
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+
+        .lenis.lenis-stopped {
+            overflow: hidden;
+        }
+
+        .lenis.lenis-scrolling iframe {
+            pointer-events: none;
+        }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: var(--font-sans);
+            font-weight: 300;
+            overflow-x: hidden;
+            cursor: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Custom Cursor */
+        .cursor-dot {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--white);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+        }
+
+        .cursor-ring {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--emerald);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+        }
+
+        body.hovering .cursor-ring {
+            width: 60px;
+            height: 60px;
+            background: rgba(74, 222, 128, 0.08);
+            border-color: transparent;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--black);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-content {
+            text-align: center;
+            position: relative;
+        }
+
+        .loading-title {
+            font-family: var(--font-serif);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .loading-line {
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--emerald), transparent);
+            margin: 30px auto 0;
+        }
+
+        .loading-complete .loading-title {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .loading-complete .loading-line {
+            width: 200px;
+            transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 30px 60px;
+            z-index: 1000;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .navbar.scrolled {
+            padding: 20px 60px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 400;
+            letter-spacing: 0.15em;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--emerald);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 50px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--white-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--emerald);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--white);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            padding: 12px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s;
+        }
+
+        .nav-cta:hover {
+            border-color: var(--emerald);
+            color: var(--emerald);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, #0a1a10 0%, var(--black) 70%);
+        }
+
+        .hero-cursor-light {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, var(--emerald-glow) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0.4;
+            filter: blur(60px);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1600px;
+            width: 100%;
+            padding: 0 60px;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .hero-text {
+            padding-right: 40px;
+        }
+
+        .hero-title {
+            font-family: var(--font-serif);
+            font-size: clamp(3.5rem, 7vw, 6.5rem);
+            font-weight: 300;
+            line-height: 1.05;
+            margin-bottom: 40px;
+            opacity: 0;
+            filter: blur(20px);
+        }
+
+        .hero-title .line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .hero-title .word {
+            display: inline-block;
+            transform: translateY(100%);
+        }
+
+        .hero-description {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--white-muted);
+            max-width: 500px;
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 25px;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .btn-primary {
+            padding: 18px 45px;
+            background: var(--white);
+            color: var(--black);
+            border: none;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            cursor: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: var(--emerald);
+            transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: -1;
+        }
+
+        .btn-primary:hover::before {
+            height: 100%;
+        }
+
+        .btn-secondary {
+            padding: 18px 45px;
+            background: transparent;
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            cursor: none;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--emerald);
+            color: var(--emerald);
+        }
+
+        .hero-visual {
+            position: relative;
+            height: 700px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .bottle-wrapper {
+            position: relative;
+            width: 350px;
+            height: 500px;
+            perspective: 1500px;
+        }
+
+        .bottle-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--emerald) 0%, transparent 70%);
+            filter: blur(100px);
+            transform: translate(-50%, -50%);
+            opacity: 0.3;
+            animation: bottlePulse 5s ease-in-out infinite;
+        }
+
+        @keyframes bottlePulse {
+            0%, 100% { opacity: 0.25; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.4; transform: translate(-50%, -50%) scale(1.15); }
+        }
+
+        .serum-bottle {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.6));
+            transform-style: preserve-3d;
+        }
+
+        .bottle-cap {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 50px;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border-radius: 8px 8px 4px 4px;
+            opacity: 0;
+        }
+
+        .particles-container {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--emerald);
+            border-radius: 50%;
+            opacity: 0;
+            filter: blur(1px);
+        }
+
+        .bubble {
+            position: absolute;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 50%;
+            opacity: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            opacity: 0;
+        }
+
+        .scroll-text {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--white-muted);
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 80px;
+            background: linear-gradient(to bottom, var(--emerald), transparent);
+            animation: scrollLine 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollLine {
+            0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+            50% { opacity: 1; transform: scaleY(1); }
+        }
+
+        /* Science Section */
+        .science {
+            min-height: 100vh;
+            padding: 150px 60px;
+            background: var(--charcoal-1);
+            position: relative;
+        }
+
+        .science-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 100px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .science-sticky {
+            position: sticky;
+            top: 150px;
+            height: fit-content;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--emerald);
+            margin-bottom: 25px;
+        }
+
+        .science-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            font-weight: 300;
+            line-height: 1.1;
+            margin-bottom: 40px;
+        }
+
+        .science-description {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: var(--white-muted);
+            margin-bottom: 60px;
+        }
+
+        .science-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            padding-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: var(--font-serif);
+            font-size: 3.5rem;
+            font-weight: 300;
+            color: var(--emerald);
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+        }
+
+        .stat-number span {
+            font-size: 1.5rem;
+            margin-left: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--white-muted);
+            margin-top: 15px;
+        }
+
+        .science-images {
+            position: relative;
+            height: 900px;
+        }
+
+        .science-image-card {
+            position: absolute;
+            width: 85%;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .science-image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .science-image-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .science-image-card .caption {
+            position: absolute;
+            bottom: 25px;
+            left: 25px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .science-image-card:nth-child(1) {
+            top: 0;
+            right: 0;
+            z-index: 3;
+        }
+
+        .science-image-card:nth-child(2) {
+            top: 280px;
+            right: -30px;
+            z-index: 2;
+        }
+
+        .science-image-card:nth-child(3) {
+            top: 560px;
+            right: 40px;
+            z-index: 1;
+        }
+
+        /* Product Section */
+        .product {
+            min-height: 100vh;
+            padding: 150px 60px;
+            background: var(--black);
+        }
+
+        .product-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .product-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 120px;
+            align-items: center;
+        }
+
+        .product-viewer {
+            position: relative;
+            height: 650px;
+            background: radial-gradient(circle at center, #1a1a1a 0%, var(--black) 70%);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .product-viewer img {
+            max-width: 70%;
+            max-height: 80%;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+
+        .viewer-hint {
+            position: absolute;
+            bottom: 30px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--white-muted);
+            opacity: 0.6;
+        }
+
+        .product-info h2 {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 300;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .product-price {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        .product-description {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: var(--white-muted);
+            margin-bottom: 40px;
+        }
+
+        .product-specs {
+            list-style: none;
+            padding: 30px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .product-specs li {
+            font-size: 0.9rem;
+            color: var(--white-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .product-specs li::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--emerald);
+            border-radius: 50%;
+        }
+
+        .btn-add-cart {
+            width: 100%;
+            padding: 22px;
+            background: var(--white);
+            color: var(--black);
+            border: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            cursor: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+        }
+
+        .btn-add-cart::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: var(--emerald);
+            transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: -1;
+        }
+
+        .btn-add-cart:hover::before {
+            height: 100%;
+        }
+
+        /* Ingredients Section */
+        .ingredients {
+            min-height: 100vh;
+            padding: 150px 60px;
+            background: var(--charcoal-2);
+        }
+
+        .ingredients-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .ingredients-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            font-weight: 300;
+        }
+
+        .ingredients-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 280px;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .ingredient-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+
+        .ingredient-item.tall {
+            grid-row: span 2;
+        }
+
+        .ingredient-item.wide {
+            grid-column: span 2;
+        }
+
+        .ingredient-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .ingredient-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .ingredient-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .ingredient-item:hover .ingredient-overlay {
+            opacity: 1;
+        }
+
+        .ingredient-name {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: var(--emerald);
+            border-bottom: 1px solid var(--emerald);
+            padding-bottom: 5px;
+        }
+
+        /* Ritual Section */
+        .ritual {
+            min-height: 100vh;
+            background: var(--charcoal-1);
+            overflow: hidden;
+        }
+
+        .ritual-track {
+            display: flex;
+            gap: 10vw;
+            padding-left: 10vw;
+            width: 350vw;
+            height: 100vh;
+            align-items: center;
+        }
+
+        .ritual-step {
+            width: 60vw;
+            height: 70vh;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .ritual-step img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            filter: grayscale(0.4);
+            transition: filter 0.5s;
+        }
+
+        .ritual-step:hover img {
+            filter: grayscale(0);
+        }
+
+        .ritual-step-number {
+            position: absolute;
+            bottom: -70px;
+            left: 0;
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            color: var(--emerald);
+        }
+
+        .ritual-step-title {
+            position: absolute;
+            bottom: -120px;
+            left: 0;
+            font-size: 1.1rem;
+            color: var(--white-muted);
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            min-height: 80vh;
+            padding: 150px 60px;
+            background: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .testimonial-container {
+            max-width: 900px;
+            text-align: center;
+        }
+
+        .testimonial-quote {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 300;
+            line-height: 1.4;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .testimonial-author {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--gold);
+        }
+
+        /* Sustainability */
+        .sustainability {
+            height: 90vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .sustainability-bg {
+            position: absolute;
+            inset: 0;
+        }
+
+        .sustainability-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.5);
+        }
+
+        .sustainability-content {
+            position: relative;
+            z-index: 10;
+            max-width: 700px;
+            padding: 60px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sustainability-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 300;
+            margin-bottom: 25px;
+        }
+
+        .sustainability-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--white-muted);
+        }
+
+        /* Journal */
+        .journal {
+            min-height: 100vh;
+            padding: 150px 60px;
+            background: var(--charcoal-2);
+        }
+
+        .journal-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .journal-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            font-weight: 300;
+        }
+
+        .journal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .journal-card {
+            background: var(--charcoal-1);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .journal-card:hover {
+            transform: translateY(-15px);
+        }
+
+        .journal-card-image {
+            height: 350px;
+            overflow: hidden;
+        }
+
+        .journal-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s;
+        }
+
+        .journal-card:hover .journal-card-image img {
+            transform: scale(1.08);
+        }
+
+        .journal-card-content {
+            padding: 35px;
+        }
+
+        .journal-category {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--emerald);
+        }
+
+        .journal-card-title {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            font-weight: 300;
+            margin-top: 15px;
+            line-height: 1.3;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--charcoal-2);
+            padding: 120px 60px 60px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 100px;
+            padding-bottom: 80px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-brand h3 {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 15px;
+        }
+
+        .footer-brand p {
+            color: var(--white-muted);
+            font-size: 0.95rem;
+        }
+
+        .newsletter h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 25px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .newsletter-form input {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            font-size: 1rem;
+            width: 300px;
+            outline: none;
+            font-family: var(--font-sans);
+        }
+
+        .newsletter-form button {
+            background: transparent;
+            border: none;
+            color: var(--emerald);
+            font-size: 1.5rem;
+            cursor: none;
+            transition: transform 0.3s;
+        }
+
+        .newsletter-form button:hover {
+            transform: translateX(5px);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 40px;
+        }
+
+        .footer-links a {
+            color: var(--white-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--white);
+        }
+
+        .footer-copyright {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 0 40px;
+            }
+
+            .hero-text {
+                padding-right: 0;
+            }
+
+            .hero-description {
+                margin: 0 auto 40px;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .science-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .science-sticky {
+                position: relative;
+                top: 0;
+            }
+
+            .science-images {
+                height: 700px;
+            }
+
+            .product-showcase {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+
+            .ingredients-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .journal-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 20px 30px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .science, .product, .ingredients, .ritual, .testimonials, .journal, .footer {
+                padding-left: 30px;
+                padding-right: 30px;
+            }
+
+            .science-stats {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .science-image-card {
+                position: relative;
+                width: 100%;
+                margin-bottom: 30px;
+                top: auto !important;
+                right: auto !important;
+            }
+
+            .science-images {
+                height: auto;
+            }
+
+            .ingredients-grid {
+                grid-template-columns: 1fr;
+                grid-auto-rows: 300px;
+            }
+
+            .ingredient-item.wide {
+                grid-column: span 1;
+            }
+
+            .ritual-track {
+                width: 400vw;
+            }
+
+            .ritual-step {
+                width: 80vw;
+            }
+
+            .footer-top {
+                flex-direction: column;
+                gap: 50px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loading-content">
+            <h1 class="loading-title">FARAH</h1>
+            <div class="loading-line"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">FARAH<span>.</span></a>
+            <ul class="nav-links">
+                <li><a href="#science" class="magnetic">The Science</a></li>
+                <li><a href="#product" class="magnetic">The Serum</a></li>
+                <li><a href="#ritual" class="magnetic">Ritual</a></li>
+                <li><a href="#journal" class="magnetic">Journal</a></li>
+            </ul>
+            <a href="#product" class="nav-cta magnetic">Shop Now</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg"></div>
+        <div class="hero-cursor-light"></div>
+        
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="line"><span class="word">Pure Aloe.</span></span>
+                    <span class="line"><span class="word">Pure Luxury.</span></span>
+                </h1>
+                <p class="hero-description">
+                    Experience the potency of nature refined by science. Our exclusive serum 
+                    harnesses the deepest hydration from organic aloe vera, encapsulated in timeless elegance.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn-primary magnetic">Discover the Serum</button>
+                    <button class="btn-secondary magnetic">Explore Science</button>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="bottle-wrapper">
+                    <div class="bottle-glow"></div>
+                    <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                         alt="Farah Aloe Serum" class="serum-bottle" id="heroBottle">
+                    <div class="bottle-cap"></div>
+                </div>
+                <div class="particles-container" id="particlesContainer"></div>
+            </div>
+        </div>
+
+        <div class="scroll-indicator">
+            <span class="scroll-text">Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Science Section -->
+    <section class="science" id="science">
+        <div class="science-grid">
+            <div class="science-sticky">
+                <p class="section-label">The Science</p>
+                <h2 class="science-title">Nature's Precision,<br>Science's Mastery</h2>
+                <p class="science-description">
+                    We source our aloe from sustainable high-altitude farms, extracting the purest gel 
+                    within hours of harvest to preserve enzymatic activity and maximum potency.
+                </p>
+                <div class="science-stats">
+                    <div class="stat">
+                        <div class="stat-number" data-target="99"><span class="count">0</span><span>%</span></div>
+                        <p class="stat-label">Organic Content</p>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" data-target="24"><span class="count">0</span><span>h</span></div>
+                        <p class="stat-label">Harvest to Extract</p>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" data-target="15"><span class="count">0</span><span>+</span></div>
+                        <p class="stat-label">Essential Amino Acids</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="science-images">
+                <div class="science-image-card" data-speed="0.2">
+                    <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Aloe Farm">
+                    <span class="caption">Sustainable Sourcing</span>
+                </div>
+                <div class="science-image-card" data-speed="0.5">
+                    <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Lab Extraction">
+                    <span class="caption">Cold-Press Extraction</span>
+                </div>
+                <div class="science-image-card" data-speed="0.8">
+                    <img src="https://images.unsplash.com/photo-1579165466741-7f35a4755657?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Pure Gel">
+                    <span class="caption">Molecular Purity</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Section -->
+    <section class="product" id="product">
+        <div class="product-container">
+            <div class="product-showcase">
+                <div class="product-viewer" id="productViewer">
+                    <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                         alt="Farah Serum 360" id="productImage">
+                    <p class="viewer-hint">Drag to rotate</p>
+                </div>
+                
+                <div class="product-info">
+                    <h2>The Farah Elixir</h2>
+                    <p class="product-price">$125.00</p>
+                    <p class="product-description">
+                        A concentrated dose of hydration. This weightless serum penetrates deeper than 
+                        traditional moisturizers, leaving skin plump, radiant, and resilient. The perfect 
+                        fusion of nature's most powerful hydrator with cutting-edge skincare science.
+                    </p>
+                    <ul class="product-specs">
+                        <li>Volume: 30ml / 1.0 fl oz</li>
+                        <li>Skin Type: All skin types</li>
+                        <li>Finish: Dewy, luminous glow</li>
+                        <li>Key Ingredient: Organic Aloe Vera</li>
+                    </ul>
+                    <button class="btn-add-cart magnetic">Add to Ritual</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ingredients Section -->
+    <section class="ingredients" id="ingredients">
+        <div class="ingredients-header">
+            <p class="section-label">Ingredients</p>
+            <h2 class="ingredients-title">Botanical Architecture</h2>
+        </div>
+        
+        <div class="ingredients-grid">
+            <div class="ingredient-item tall">
+                <img src="https://images.unsplash.com/photo-1598440947619-5c94396e9c7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Aloe">
+                <div class="ingredient-overlay">
+                    <span class="ingredient-name">Aloe Barbadensis</span>
+                </div>
+            </div>
+            <div class="ingredient-item">
+                <img src="https://images.unsplash.com/photo-1611080626919-7cf5a9db85b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Hyaluronic Acid">
+                <div class="ingredient-overlay">
+                    <span class="ingredient-name">Hyaluronic Acid</span>
+                </div>
+            </div>
+            <div class="ingredient-item wide">
+                <img src="https://images.unsplash.com/photo-1608248597279-f99d160bfbc8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Vitamin E">
+                <div class="ingredient-overlay">
+                    <span class="ingredient-name">Vitamin E</span>
+                </div>
+            </div>
+            <div class="ingredient-item">
+                <img src="https://images.unsplash.com/photo-1629198688000-71f23e745b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Green Tea">
+                <div class="ingredient-overlay">
+                    <span class="ingredient-name">Green Tea Extract</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ritual Section -->
+    <section class="ritual" id="ritual">
+        <div class="ritual-track">
+            <div class="ritual-step">
+                <img src="https://images.unsplash.com/photo-1556228720-1987df1c52b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Cleanse">
+                <p class="ritual-step-number">01.</p>
+                <p class="ritual-step-title">Cleanse — Prepare the canvas with a gentle purge of impurities. Allow skin to breathe.</p>
+            </div>
+            <div class="ritual-step">
+                <img src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Apply">
+                <p class="ritual-step-number">02.</p>
+                <p class="ritual-step-title">Apply — Warm two drops between palms. Press gently into skin. Feel the transformation.</p>
+            </div>
+            <div class="ritual-step">
+                <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Glow">
+                <p class="ritual-step-number">03.</p>
+                <p class="ritual-step-title">Glow — Witness the immediate radiance. Your skin, elevated to its purest form.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" id="testimonials">
+        <div class="testimonial-container">
+            <blockquote class="testimonial-quote">
+                "An absolute revelation in skincare. The texture is unlike anything I've experienced—weightless yet profoundly hydrating."
+            </blockquote>
+            <p class="testimonial-author">— Elena R., Verified Buyer</p>
+        </div>
+    </section>
+
+    <!-- Sustainability -->
+    <section class="sustainability" id="sustainability">
+        <div class="sustainability-bg">
+            <img src="https://images.unsplash.com/photo-1463936575829-25148e1db1b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Farm">
+        </div>
+        <div class="sustainability-content">
+            <h2 class="sustainability-title">Rooted in Responsibility</h2>
+            <p class="sustainability-text">
+                Every bottle sold contributes to reforestation projects in arid regions. 
+                Beauty that heals the earth, one drop at a time.
+            </p>
+        </div>
+    </section>
+
+    <!-- Journal -->
+    <section class="journal" id="journal">
+        <div class="journal-header">
+            <p class="section-label">Journal</p>
+            <h2 class="journal-title">The Edit</h2>
+        </div>
+        
+        <div class="journal-grid">
+            <article class="journal-card">
+                <div class="journal-card-image">
+                    <img src="https://images.unsplash.com/photo-1571781565036-d3f7595ca3e4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Wellness">
+                </div>
+                <div class="journal-card-content">
+                    <p class="journal-category">Wellness</p>
+                    <h3 class="journal-card-title">The Art of Slowing Down</h3>
+                </div>
+            </article>
+            <article class="journal-card">
+                <div class="journal-card-image">
+                    <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Ingredients">
+                </div>
+                <div class="journal-card-content">
+                    <p class="journal-category">Ingredients</p>
+                    <h3 class="journal-card-title">Why Cold-Press Matters</h3>
+                </div>
+            </article>
+            <article class="journal-card">
+                <div class="journal-card-image">
+                    <img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Ritual">
+                </div>
+                <div class="journal-card-content">
+                    <p class="journal-category">Ritual</p>
+                    <h3 class="journal-card-title">Morning vs. Night Routines</h3>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <h3>FARAH</h3>
+                    <p>Pure Aloe. Pure Luxury.</p>
+                </div>
+                <div class="newsletter">
+                    <h4>Join the Inner Circle</h4>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Email Address" required>
+                        <button type="submit" class="magnetic">→</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-links">
+                    <a href="#">Shipping</a>
+                    <a href="#">Returns</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+                <p class="footer-copyright">&copy; 2024 Farah Cosmetics. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lenis Smooth Scroll
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Register GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Custom Cursor
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorRing = document.querySelector('.cursor-ring');
+        let mouseX = 0, mouseY = 0;
+        let ringX = 0, ringY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            cursorDot.style.left = mouseX + 'px';
+            cursorDot.style.top = mouseY + 'px';
+
+            // Hero light effect
+            const heroLight = document.querySelector('.hero-cursor-light');
+            if (heroLight) {
+                heroLight.style.left = mouseX + 'px';
+                heroLight.style.top = mouseY + 'px';
+            }
+        });
+
+        // Smooth ring follow
+        function animateCursor() {
+            ringX += (mouseX - ringX) * 0.15;
+            ringY += (mouseY - ringY) * 0.15;
+            
+            cursorRing.style.left = ringX + 'px';
+            cursorRing.style.top = ringY + 'px';
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Hover states
+        const interactiveElements = document.querySelectorAll('a, button, input, .magnetic');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+
+        // Magnetic Effect
+        const magnets = document.querySelectorAll('.magnetic');
+        magnets.forEach(magnet => {
+            magnet.addEventListener('mousemove', (e) => {
+                const rect = magnet.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                gsap.to(magnet, {
+                    x: x * 0.3,
+                    y: y * 0.3,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+            
+            magnet.addEventListener('mouseleave', () => {
+                gsap.to(magnet, {
+                    x: 0,
+                    y: 0,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Loading Animation
+        window.addEventListener('load', () => {
+            const tl = gsap.timeline();
+            
+            tl.to('.loading-title', {
+                opacity: 1,
+                y: 0,
+                duration: 1.5,
+                ease: 'power3.out'
+            })
+            .to('.loading-line', {
+                width: 200,
+                duration: 1.5,
+                ease: 'power3.inOut'
+            }, '-=1')
+            .to('.loading-screen', {
+                opacity: 0,
+                duration: 1,
+                onComplete: () => {
+                    document.querySelector('.loading-screen').style.display = 'none';
+                    initHeroAnimations();
+                }
+            });
+        });
+
+        // Hero Animations
+        function initHeroAnimations() {
+            const tl = gsap.timeline();
+            
+            // Bottle float animation
+            gsap.to('#heroBottle', {
+                y: -20,
+                rotationY: 5,
+                duration: 4,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut'
+            });
+
+            // Create particles
+            createParticles();
+            createBubbles();
+
+            // Text reveal
+            tl.to('.hero-title', {
+                opacity: 1,
+                filter: 'blur(0px)',
+                duration: 2,
+                ease: 'power3.out'
+            })
+            .to('.hero-title .word', {
+                y: 0,
+                stagger: 0.1,
+                duration: 1,
+                ease: 'power3.out'
+            }, '-=1.5')
+            .to('.hero-description', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out'
+            }, '-=0.5')
+            .to('.hero-buttons', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out'
+            }, '-=0.8')
+            .to('.scroll-indicator', {
+                opacity: 1,
+                duration: 1
+            }, '-=0.5');
+        }
+
+        // Particle System
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                container.appendChild(particle);
+
+                gsap.to(particle, {
+                    y: -100 - Math.random() * 200,
+                    opacity: Math.random() * 0.8,
+                    duration: 3 + Math.random() * 4,
+                    repeat: -1,
+                    delay: Math.random() * 2,
+                    ease: 'none'
+                });
+            }
+        }
+
+        // Bubble System
+        function createBubbles() {
+            const container = document.getElementById('particlesContainer');
+            const bubbleCount = 15;
+
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                const size = 10 + Math.random() * 30;
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                bubble.style.left = Math.random() * 100 + '%';
+                bubble.style.top = '100%';
+                container.appendChild(bubble);
+
+                gsap.to(bubble, {
+                    y: -800 - Math.random() * 200,
+                    x: (Math.random() - 0.5) * 100,
+                    opacity: Math.random() * 0.6,
+                    duration: 8 + Math.random() * 6,
+                    repeat: -1,
+                    delay: Math.random() * 5,
+                    ease: 'none'
+                });
+            }
+        }
+
+        // Navbar Scroll Effect
+        ScrollTrigger.create({
+            start: 'top -80',
+            onUpdate: (self) => {
+                const navbar = document.querySelector('.navbar');
+                if (self.scroll() > 10) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            }
+        });
+
+        // Science Section Parallax
+        gsap.utils.toArray('.science-image-card').forEach((card, i) => {
+            const speed = card.getAttribute('data-speed');
+            gsap.to(card, {
+                y: -150 * speed,
+                scrollTrigger: {
+                    trigger: '.science',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: true
+                }
+            });
+        });
+
+        // Counter Animation
+        gsap.utils.toArray('.stat-number').forEach(stat => {
+            const target = stat.getAttribute('data-target');
+            const countEl = stat.querySelector('.count');
+            
+            ScrollTrigger.create({
+                trigger: stat,
+                start: 'top 80%',
+                once: true,
+                onEnter: () => {
+                    gsap.to(countEl, {
+                        innerHTML: target,
+                        duration: 2,
+                        snap: { innerHTML: 1 },
+                        ease: 'power2.out'
+                    });
+                }
+            });
+        });
+
+        // Fade Up Elements
+        gsap.utils.toArray('.hero-description, .hero-buttons, .science-title, .science-description').forEach(el => {
+            gsap.from(el, {
+                opacity: 0,
+                y: 50,
+                duration: 1.2,
+                scrollTrigger: {
+                    trigger: el,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none'
+                }
+            });
+        });
+
+        // Ingredients Grid Reveal
+        gsap.utils.toArray('.ingredient-item').forEach((item, i) => {
+            gsap.from(item, {
+                opacity: 0,
+                y: 60,
+                duration: 1,
+                delay: i * 0.1,
+                scrollTrigger: {
+                    trigger: item,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none'
+                }
+            });
+        });
+
+        // Horizontal Scroll for Ritual
+        if (window.innerWidth > 768) {
+            gsap.to('.ritual-track', {
+                x: () => -(document.querySelector('.ritual-track').scrollWidth - window.innerWidth),
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '.ritual',
+                    start: 'top top',
+                    end: () => '+=' + document.querySelector('.ritual-track').scrollWidth,
+                    pin: true,
+                    scrub: 1,
+                    invalidateOnRefresh: true
+                }
+            });
+        }
+
+        // Product Viewer Drag
+        const viewer = document.getElementById('productViewer');
+        const productImage = document.getElementById('productImage');
+        let isDragging = false;
+        let startX = 0;
+        let rotation = 0;
+
+        viewer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            viewer.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            viewer.style.cursor = 'default';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const deltaX = e.clientX - startX;
+            rotation += deltaX * 0.5;
+            productImage.style.transform = `rotateY(${rotation}deg)`;
+            startX = e.clientX;
+        });
+
+        // Touch support
+        viewer.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startX = e.touches[0].clientX;
+        });
+
+        window.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const deltaX = e.touches[0].clientX - startX;
+            rotation += deltaX * 0.5;
+            productImage.style.transform = `rotateY(${rotation}deg)`;
+            startX = e.touches[0].clientX;
+        });
+
+        // Testimonial Typewriter Effect
+        const testimonialQuote = document.querySelector('.testimonial-quote');
+        const originalText = testimonialQuote.textContent;
+        
+        ScrollTrigger.create({
+            trigger: '.testimonials',
+            start: 'top 60%',
+            once: true,
+            onEnter: () => {
+                testimonialQuote.textContent = '';
+                let i = 0;
+                function typeWriter() {
+                    if (i < originalText.length) {
+                        testimonialQuote.textContent += originalText.charAt(i);
+                        i++;
+                        setTimeout(typeWriter, 30);
+                    }
+                }
+                typeWriter();
+            }
+        });
+
+        // Journal Cards Hover
+        gsap.utils.toArray('.journal-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, {
+                    y: -15,
+                    duration: 0.5,
+                    ease: 'power3.out'
+                });
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, {
+                    y: 0,
+                    duration: 0.5,
+                    ease: 'power3.out'
+                });
+            });
+        });
+
+        // Sustainability Parallax
+        gsap.to('.sustainability-bg img', {
+            y: 100,
+            scrollTrigger: {
+                trigger: '.sustainability',
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: true
+            }
+        });
+    </script>
+</body>
+</html>
